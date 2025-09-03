@@ -1,3 +1,4 @@
+import Button from '../components/Button'
 import styles from './page.module.css'
 export default function Login() {
 
@@ -14,16 +15,13 @@ export default function Login() {
                 <form className={styles.form}>
                     <input type="text" className={styles.input} placeholder='Usuário' />
                     <input type="text" className={styles.input} placeholder='Senha' />
-                    <button type="submit">LOGIN</button>
+                    <Button size='lg' variant='primary' type='submit'>
+                        LOGIN
+                        
+                    </Button>
                 </form>
             </div>
         </div>
-
-
-
-
-
-
     )
 
 

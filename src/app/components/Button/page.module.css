@@ -1,0 +1,50 @@
+.button
+{
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    border-radius: 4px;
+    transition: .3s;
+}
+.lg
+{
+    width: 100%;
+    padding: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+}
+.md
+{
+    padding: .4rem 1.2rem;
+    font-size: 16px;
+    font-weight: 500;
+}
+.sm
+{
+    padding: .2rem .6rem;
+    font-size: 12px;
+    font-weight: 400;
+}
+.primary
+{
+    background-color: #007bff;
+    color: white
+}
+.primary:hover
+{
+    opacity: 0.9;
+}
+.secondary
+{
+    background-color: var(--tertiary-color);
+    color: var(--primary-color);
+}
+.secondary:hover
+{
+   background-color: var(--secondary-color);
+    color: var(--tertiary-color);
+}
