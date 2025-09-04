@@ -3,10 +3,28 @@ import Button from "@/app/components/Button";
 import styles from './page.module.css'
 import React, { useState } from "react";
 import Task from "@/app/components/task";
+import Priority from "@/app/components/priority";
+
+interface Task {
+    id: number;
+    title: string;
+    description?: string;
+    priority?: 'low' | 'medium' | 'high' | 'finished' | null;
+    deadline?: Date | null;
+}
+
+type PriorityType = 'low' | 'medium' | 'high' | 'finished' | null;
+
 export default function Tasks() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    
+    const [tasks, setTasks] = useState([] as Task[]);
+    const [newTask, setNewTask] = useState({
+        title: '',
+        description: '',
+        priority: null,
+        deadline: null
+    } as Task);
 
 
     return (
@@ -29,13 +47,25 @@ export default function Tasks() {
                         </header>
 
                         <form className={styles.form}>
-                            <input type="text" placeholder="Título da Tarefa" />
+                            <input type="text"
+                                placeholder="Título da Tarefa"
+                                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                            />
                             <div>
-                                <select name="priority" id="priority">
-                                    <option value="">Sem Prioridade</option>
-                                    <option value="baixa">Baixa Prioridade</option>
-                                    <option value="media">Média Prioridade</option>
-                                    <option value="alta">Alta Prioridade</option>
+                                <select
+                                    value={newTask.priority || 'no'}
+                                    onChange={(e) => setNewTask({ ...newTask, priority: (e.target.value === 'no' ? null : e.target.value) as PriorityType })}
+                                >
+                                    <option value="no">Sem Prioridade</option>
+                                    <option value="low">
+                                        <Priority type="low" />
+                                    </option>
+                                    <option value="medium">
+                                        <Priority type="medium" />
+                                    </option>
+                                    <option value="high">
+                                        <Priority type="high" />
+                                    </option>
                                 </select>
                                 <input type="date" name="" id="" />
                             </div>
