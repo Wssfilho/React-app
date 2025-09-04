@@ -6,6 +6,7 @@ import Task from "@/app/components/task";
 export default function Tasks() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    
 
 
     return (

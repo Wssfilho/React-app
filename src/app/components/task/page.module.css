@@ -37,3 +37,14 @@
     display: flex;
     justify-content: space-between;
 }
+.description{
+    font-size: .9rem;
+    text-wrap: wrap;
+    overflow: hidden;
+}
+.finished header,
+.finished .description
+{
+    text-decoration: line-through;
+    color : var(--tertiary-color);
+}
