@@ -32,3 +32,8 @@
     color: var(--text-color);
     font-size: 1.2rem;
 }
+
+.taskInfo{
+    display: flex;
+    justify-content: space-between;
+}

@@ -12,8 +12,10 @@ export default function Task() {
                         <FiTrash /> </button>
                 </div>
             </header>
-            <div><p>Prioridade</p></div>
-            <p>Prazo /00/00/00</p>
+            <div className={styles.taskInfo}><p>Prioridade</p>
+                <p>Prazo /00/00/00</p>
+            </div>
+
             <p>Descrição</p>
 
         </div>
