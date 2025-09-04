@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/app/components/Button";
 import styles from './page.module.css'
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import Task from "@/app/components/task";
 import Priority from "@/app/components/priority";
 
@@ -15,8 +15,11 @@ interface Task {
 
 type PriorityType = 'low' | 'medium' | 'high' | 'finished' | null;
 
+
+
 export default function Tasks() {
 
+    const [idCounter, setIdCounter] = useState(0);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [tasks, setTasks] = useState([] as Task[]);
     const [newTask, setNewTask] = useState({
@@ -25,7 +28,17 @@ export default function Tasks() {
         priority: null,
         deadline: null
     } as Task);
+    function handleAddNewEvent(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
 
+        setTasks([...tasks, { ...newTask, id: idCounter }]);
+        setIdCounter(idCounter + 1);
+        setTasks([...tasks, newTask]);
+        setModalIsOpen(false);
+    }
+    function handleDeleteTask(id: number) {
+        setTasks(tasks.filter((task) => task.id !== id));
+    }
 
     return (
         <>
@@ -67,9 +80,14 @@ export default function Tasks() {
                                         <Priority type="high" />
                                     </option>
                                 </select>
-                                <input type="date" name="" id="" />
+                                <input type="date"
+
+                                    onChange={(e) => setNewTask({ ...newTask, deadline: e.target.value ? new Date(e.target.value) : null })}
+                                />
                             </div>
-                            <textarea name="" id="" cols={30} rows={10} placeholder="Descrição da Tarefa"></textarea>
+                            <textarea
+                                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                                placeholder="Descrição da Tarefa" />
                             <Button
                                 size='lg'
                                 variant='primary'
@@ -99,6 +117,18 @@ export default function Tasks() {
                 <main className={styles.main}>
                     <Task title="Tarefa 1" description="Descrição da Tarefa 1" priority="high" deadline={new Date()} />
                     <Task title="Tarefa 2" description="Descrição da Tarefa 2" priority="medium" deadline={new Date()} />
+                    {tasks.map((task) => {
+                        return (
+                            <Task
+                                key={task.id}
+                                title={task.title}
+                                description={task.description}
+                                {...task.priority && { priority: task.priority }}
+                                {...task.deadline && { deadline: task.deadline }}
+                                onDelete={}
+                            />
+                        );
+                    })}
                 </main>
             </div>
         </>
