@@ -2,6 +2,7 @@
 import Button from "@/app/components/Button";
 import styles from './page.module.css'
 import React, { useState } from "react";
+import Task from "@/app/components/task";
 export default function Tasks() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -64,8 +65,8 @@ export default function Tasks() {
                         Adicionar Tarefa
                     </Button>
                 </header>
-                <main>
-
+                <main className={styles.main}>
+                    <Task /> <Task />
                 </main>
             </div>
         </>
