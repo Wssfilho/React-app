@@ -33,6 +33,15 @@ export default function Tasks() {
 
         setTasks([...tasks, { ...newTask, id: idCounter }]);
         setIdCounter(idCounter + 1);
+        setNewTask({
+            id: idCounter,
+            title: '',
+            description: '',
+            priority: null,
+            deadline: null
+
+
+        })
         setTasks([...tasks, newTask]);
         setModalIsOpen(false);
     }
