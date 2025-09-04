@@ -66,7 +66,8 @@ export default function Tasks() {
                     </Button>
                 </header>
                 <main className={styles.main}>
-                    <Task /> <Task />
+                    <Task title="Tarefa 1" description="Descrição da Tarefa 1" priority="high" deadline={new Date()} />
+                    <Task title="Tarefa 2" description="Descrição da Tarefa 2" priority="medium" deadline={new Date()} />
                 </main>
             </div>
         </>

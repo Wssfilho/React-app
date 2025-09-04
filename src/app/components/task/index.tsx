@@ -1,23 +1,36 @@
-
+import Priority from '../priority'
 import styles from './page.module.css'
 import { FiTrash } from 'react-icons/fi'
-export default function Task() {
-    return (
-        <div className={styles.taskContainer}>
-            <header>
-                <h1> Titulo</h1>
-                <div className={styles.options}>
-                    <input type="checkbox" name="" id="" />
-                    <button>
-                        <FiTrash /> </button>
+
+interface TaskProps {
+    title: string
+    description?: string
+    priority?: 'low' | 'medium' | 'high' | 'finished'
+    deadline?: Date
+    onDelete?: () => void
+
+}
+export default function Task({ title, description, priority, deadline, onDelete }: TaskProps) {
+
+
+    {
+        return (
+            <div className={styles.taskContainer}>
+                <header>
+                    <h3> {title}</h3>
+                    <div className={styles.options}>
+                        <input type="checkbox" name="" id="" />
+                        <button>
+                            <FiTrash /> </button>
+                    </div>
+                </header>
+                <div className={styles.taskInfo}>
+                    {priority && <Priority type={priority} />}
+                    {deadline && <p>{deadline?.toLocaleDateString()}</p>}
                 </div>
-            </header>
-            <div className={styles.taskInfo}><p>Prioridade</p>
-                <p>Prazo /00/00/00</p>
+                {description && <p>{description}</p>}
+
             </div>
-
-            <p>Descrição</p>
-
-        </div>
-    )
+        )
+    }
 }
