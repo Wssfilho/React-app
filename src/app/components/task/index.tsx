@@ -26,7 +26,9 @@ export default function Task({ title, description, priority, deadline, onDelete 
                             setIsChecked(!isChecked)
                         }}
                         />
-                        <button>
+                        <button
+                        onClick={onDelete}
+                        >
                             <FiTrash /> </button>
                     </div>
                 </header>

@@ -59,7 +59,11 @@ export default function Tasks() {
                             </Button>
                         </header>
 
-                        <form className={styles.form}>
+                        <form
+                            onSubmit={(e) =>handleAddNewEvent(e)}
+                            className={styles.form}
+
+                        >
                             <input type="text"
                                 placeholder="Título da Tarefa"
                                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
@@ -115,8 +119,6 @@ export default function Tasks() {
                     </Button>
                 </header>
                 <main className={styles.main}>
-                    <Task title="Tarefa 1" description="Descrição da Tarefa 1" priority="high" deadline={new Date()} />
-                    <Task title="Tarefa 2" description="Descrição da Tarefa 2" priority="medium" deadline={new Date()} />
                     {tasks.map((task) => {
                         return (
                             <Task
@@ -125,7 +127,7 @@ export default function Tasks() {
                                 description={task.description}
                                 {...task.priority && { priority: task.priority }}
                                 {...task.deadline && { deadline: task.deadline }}
-                                onDelete={}
+                                onDelete={() => handleDeleteTask(task.id)}
                             />
                         );
                     })}
