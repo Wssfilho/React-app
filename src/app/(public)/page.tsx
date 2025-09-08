@@ -5,7 +5,7 @@ import styles from './page.module.css'
 import axios from 'axios'
 import { api } from "./global";
 import { FormEvent, useEffect, useState } from 'react';
-
+export let token = ''
 export default function Login() {
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
@@ -16,13 +16,12 @@ export default function Login() {
         setMounted(true); // Evita SSR do formulário e previne mismatch por autofill/extensões
     }, []);
 
-  async function handleFormSubmit(event: FormEvent) {
+    async function handleFormSubmit(event: FormEvent) {
 
         event.preventDefault();
         axios.post(`${api}api/token/`, credenciais)
             .then(response => {
-                const { token } = response.data.access;
-                console.log(token);
+                token = response.data.access;
                 localStorage.setItem('token', token);
                 router.push('/tasks');
             })
@@ -31,7 +30,7 @@ export default function Login() {
                 alert('Falha no login. Verifique suas credenciais e tente novamente.');
             });
 
-  }
+    }
 
 
 

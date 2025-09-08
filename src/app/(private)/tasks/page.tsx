@@ -1,16 +1,22 @@
 'use client'
 import Button from "@/app/components/Button";
 import styles from './page.module.css'
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import Task from "@/app/components/task";
 import Priority from "@/app/components/priority";
 import PrivateRoute from "@/app/components/PrivateRoute";
+import axios from "axios";
+import { api } from "@/app/(public)/global";
+import { useRouter } from "next/navigation";
+import { token } from "@/app/(public)/page";
+// import removido: token não é usado aqui
+
 interface Task {
     id: number;
-    title: string;
-    description?: string;
-    priority?: 'low' | 'medium' | 'high' | 'finished' | null;
-    deadline?: Date | null;
+    titulo: string;
+    desc?: string;
+    prioridade?: 'low' | 'medium' | 'high' | 'finished' | null;
+    data_vencimento?: Date | null;
 }
 
 type PriorityType = 'low' | 'medium' | 'high' | 'finished' | null;
@@ -19,31 +25,101 @@ type PriorityType = 'low' | 'medium' | 'high' | 'finished' | null;
 
 export default function Tasks() {
 
-    const [idCounter, setIdCounter] = useState(0);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [tasks, setTasks] = useState([] as Task[]);
+    const[tasksInfo, setTasksInfo] = useState<Task[]>([]);
     const [newTask, setNewTask] = useState({
-        title: '',
-        description: '',
-        priority: null,
-        deadline: null
+        titulo: '',
+        desc: '',
+        prioridade: null,
+        data_vencimento: null
     } as Task);
-    function handleAddNewEvent(event: FormEvent<HTMLFormElement>) {
+    const router = useRouter();
+
+    const mapPriorityToInt = (p: PriorityType): number => {
+        switch (p) {
+            case 'low':
+                return 1;
+            case 'medium':
+                return 2;
+            case 'high':
+                return 3;
+            default:
+                return 0;
+        }
+    };
+
+    useEffect(() => {
+        const buscarTasks = async () => {
+            try {
+                const resposta = await fetch(api + "tarefa/", {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                });
+
+                const dados = await resposta.json();
+                console.log("dados da categorias: " + dados);
+            
+                
+                setTasksInfo(dados);
+            } catch (erro) {
+                console.error("Erro ao buscar categorias:", erro);
+            } finally {
+               
+            }
+        }
+        buscarTasks();
+
+    }, []);
+
+
+
+
+    const formatDate = (d: Date | null | undefined) => {
+        return d ? d.toISOString().slice(0, 10) : null; // YYYY-MM-DD
+    };
+
+    async function handleAddNewEvent(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        setTasks([...tasks, { ...newTask, id: idCounter }]);
-        setIdCounter(idCounter + 1);
-        setNewTask({
-            id: idCounter,
-            title: '',
-            description: '',
-            priority: null,
-            deadline: null
+        // Validação simples
 
+        if (!newTask.data_vencimento) {
+            alert('Informe uma data de vencimento.');
+            return;
+        }
 
-        })
-        setTasks([...tasks, newTask]);
-        setModalIsOpen(false);
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        if (!token) {
+            alert('Sessão expirada. Faça login novamente.');
+            return;
+        }
+        try {
+            const payload = {
+                titulo: newTask.titulo,
+                descricao: newTask.desc || '',
+                data_vencimento: formatDate(newTask.data_vencimento), // YYYY-MM-DD
+                prioridade: mapPriorityToInt(newTask.prioridade ?? null), // inteiro (0-3)
+                status: 1,
+            };
+
+            await axios.post(
+                `${api}tarefa/`,
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            router.push('/tasks');
+            setModalIsOpen(false);
+        } catch (error) {
+            console.error(error);
+            alert('Erro ao enviar a tarefa.');
+        }
     }
     function handleDeleteTask(id: number) {
         setTasks(tasks.filter((task) => task.id !== id));
@@ -69,18 +145,18 @@ export default function Tasks() {
                         </header>
 
                         <form
-                            onSubmit={(e) =>handleAddNewEvent(e)}
+                            onSubmit={(e) => handleAddNewEvent(e)}
                             className={styles.form}
 
                         >
                             <input type="text"
                                 placeholder="Título da Tarefa"
-                                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                                onChange={(e) => setNewTask({ ...newTask, titulo: e.target.value })}
                             />
                             <div>
                                 <select
-                                    value={newTask.priority || 'no'}
-                                    onChange={(e) => setNewTask({ ...newTask, priority: (e.target.value === 'no' ? null : e.target.value) as PriorityType })}
+                                    value={newTask.prioridade || 'no'}
+                                    onChange={(e) => setNewTask({ ...newTask, prioridade: (e.target.value === 'no' ? null : e.target.value) as PriorityType })}
                                 >
                                     <option value="no">Sem Prioridade</option>
                                     <option value="low">
@@ -95,11 +171,11 @@ export default function Tasks() {
                                 </select>
                                 <input type="date"
 
-                                    onChange={(e) => setNewTask({ ...newTask, deadline: e.target.value ? new Date(e.target.value) : null })}
+                                    onChange={(e) => setNewTask({ ...newTask, data_vencimento: e.target.value ? new Date(e.target.value) : null })}
                                 />
                             </div>
                             <textarea
-                                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                                onChange={(e) => setNewTask({ ...newTask, desc: e.target.value })}
                                 placeholder="Descrição da Tarefa" />
                             <Button
                                 size='lg'
@@ -128,14 +204,14 @@ export default function Tasks() {
                     </Button>
                 </header>
                 <main className={styles.main}>
-                    {tasks.map((task) => {
+                    {tasksInfo.map((task) => {
                         return (
                             <Task
                                 key={task.id}
-                                title={task.title}
-                                description={task.description}
-                                {...task.priority && { priority: task.priority }}
-                                {...task.deadline && { deadline: task.deadline }}
+                                title={task.titulo}
+                                description={task.desc}
+                                {...task.prioridade && { priority: task.prioridade }}
+                                {...task.data_vencimento && { deadline: task.data_vencimento }}
                                 onDelete={() => handleDeleteTask(task.id)}
                             />
                         );

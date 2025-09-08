@@ -4,6 +4,8 @@ interface PriorityProps {
 }
 
 export default function Priority({ type }: PriorityProps) {
+
+    
     function getPriorityText()
     {
         switch (type) {
