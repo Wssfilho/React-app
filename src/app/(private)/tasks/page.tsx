@@ -4,7 +4,7 @@ import styles from './page.module.css'
 import React, { FormEvent, useState } from "react";
 import Task from "@/app/components/task";
 import Priority from "@/app/components/priority";
-
+import PrivateRoute from "@/app/components/PrivateRoute";
 interface Task {
     id: number;
     title: string;
@@ -50,7 +50,7 @@ export default function Tasks() {
     }
 
     return (
-        <>
+        <PrivateRoute>
             {modalIsOpen && (
 
                 <div className={styles.modal}>
@@ -142,7 +142,7 @@ export default function Tasks() {
                     })}
                 </main>
             </div>
-        </>
+        </PrivateRoute>
 
     )
 }
