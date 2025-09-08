@@ -8,7 +8,6 @@ import PrivateRoute from "@/app/components/PrivateRoute";
 import axios from "axios";
 import { api } from "@/app/(public)/global";
 import { useRouter } from "next/navigation";
-import { token } from "@/app/(public)/page";
 // import removido: token não é usado aqui
 
 interface Task {
@@ -52,17 +51,13 @@ export default function Tasks() {
     useEffect(() => {
         const buscarTasks = async () => {
             try {
-                const resposta = await fetch(api + "tarefa/", {
+                const resposta = await axios.get(api + "tarefa/", {
                     headers: {
-                        Authorization: "Bearer " + token,
+                        Authorization: "Bearer " + localStorage.getItem("token"),
                     },
                 });
-
-                const dados = await resposta.json();
-                console.log("dados da categorias: " + dados);
-            
-                
-                setTasksInfo(dados);
+                console.log("dados da categorias: " + resposta.data.Tarefa);
+                setTasksInfo(resposta.data.Tarefa);
             } catch (erro) {
                 console.error("Erro ao buscar categorias:", erro);
             } finally {
@@ -84,17 +79,6 @@ export default function Tasks() {
         event.preventDefault();
 
         // Validação simples
-
-        if (!newTask.data_vencimento) {
-            alert('Informe uma data de vencimento.');
-            return;
-        }
-
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) {
-            alert('Sessão expirada. Faça login novamente.');
-            return;
-        }
         try {
             const payload = {
                 titulo: newTask.titulo,
@@ -109,13 +93,14 @@ export default function Tasks() {
                 payload,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 }
             );
 
             router.push('/tasks');
             setModalIsOpen(false);
+            alert('Tarefa adicionada com sucesso!');
         } catch (error) {
             console.error(error);
             alert('Erro ao enviar a tarefa.');

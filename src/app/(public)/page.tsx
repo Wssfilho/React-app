@@ -5,15 +5,14 @@ import styles from './page.module.css'
 import axios from 'axios'
 import { api } from "./global";
 import { FormEvent, useEffect, useState } from 'react';
-export let token = ''
 export default function Login() {
     const router = useRouter();
-    const [mounted, setMounted] = useState(false);
+    //const [mounted, setMounted] = useState(false);
     const [credenciais, setCredenciais] = useState({ username: '', password: '' });
 
 
     useEffect(() => {
-        setMounted(true); // Evita SSR do formulário e previne mismatch por autofill/extensões
+        //setMounted(true); // Evita SSR do formulário e previne mismatch por autofill/extensões
     }, []);
 
     async function handleFormSubmit(event: FormEvent) {
@@ -21,7 +20,7 @@ export default function Login() {
         event.preventDefault();
         axios.post(`${api}api/token/`, credenciais)
             .then(response => {
-                token = response.data.access;
+                const token = response.data.access;
                 localStorage.setItem('token', token);
                 router.push('/tasks');
             })
