@@ -47,6 +47,19 @@ export default function Tasks() {
                 return 0;
         }
     };
+    type TaskPropPriority = 'low' | 'medium' | 'high' | 'finished' | undefined;
+    const mapIntToPriority = (i: number): TaskPropPriority => {
+        switch (i) {
+            case 1:
+                return 'low';
+            case 2:
+                return 'medium';
+            case 3:
+                return 'high';
+            default:
+                return undefined;
+        }
+    }
 
     useEffect(() => {
         const buscarTasks = async () => {
@@ -194,9 +207,9 @@ export default function Tasks() {
                             <Task
                                 key={task.id}
                                 title={task.titulo}
-                                description={task.desc}
-                                {...task.prioridade && { priority: task.prioridade }}
-                                {...task.data_vencimento && { deadline: task.data_vencimento }}
+                                priority={mapIntToPriority(Number(task.prioridade ?? 0))}
+                                {...(task.data_vencimento && { deadline: task.data_vencimento })}
+                                description={task.desc ?? undefined}
                                 onDelete={() => handleDeleteTask(task.id)}
                             />
                         );

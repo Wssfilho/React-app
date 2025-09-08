@@ -34,7 +34,7 @@ export default function Task({ title, description, priority, deadline, onDelete 
                 </header>
                 <div className={styles.taskInfo}>
                     {priority && !isChecked ? (<Priority type={priority} />) : (isChecked && <Priority type="finished" />)}
-                    {deadline && <p>{deadline?.toLocaleDateString()}</p>}
+                    <p>{deadline?.toLocaleDateString()}</p>
                 </div>
                 {description && <p className={styles.description}>{description}</p>}
 
