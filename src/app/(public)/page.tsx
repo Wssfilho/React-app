@@ -9,27 +9,31 @@ import { FormEvent, useEffect, useState } from 'react';
 export default function Login() {
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
-    const [credenciais, setCredenciais] = useState({ email: '', password: '' });
+    const [credenciais, setCredenciais] = useState({ username: '', password: '' });
+
 
     useEffect(() => {
         setMounted(true); // Evita SSR do formulário e previne mismatch por autofill/extensões
     }, []);
 
-    async function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        try {
-            const { data } = await axios.post(api + 'api/token/', credenciais);
-            const token = data?.access ?? data?.acess; // cobre ambos os campos
-            if (token) localStorage.setItem('token', token);
-            console.log(token);
-            router.push('/tasks');
-        } catch (error) {
-            console.error('Erro ao fazer login:', error);
-            alert('Falha no login. Verifique suas credenciais e tente novamente.');
-        }
-    }
+  async function handleFormSubmit(event: FormEvent) {
 
-    if (!mounted) return null;
+        event.preventDefault();
+        axios.post(`${api}api/token/`, credenciais)
+            .then(response => {
+                const { token } = response.data.access;
+                console.log(token);
+                localStorage.setItem('token', token);
+                router.push('/tasks');
+            })
+            .catch(error => {
+                console.error('Erro ao fazer login:', error);
+                alert('Falha no login. Verifique suas credenciais e tente novamente.');
+            });
+
+  }
+
+
 
     return (
         <div className={styles.container}>
@@ -45,9 +49,9 @@ export default function Login() {
                         name="username"
                         className={styles.input}
                         placeholder="Usuário"
-                        value={credenciais.email}
+                        value={credenciais.username}
                         autoComplete="username"
-                        onChange={(e) => setCredenciais({ ...credenciais, email: e.target.value })}
+                        onChange={(e) => setCredenciais({ ...credenciais, username: e.target.value })}
                     />
 
                     <input
