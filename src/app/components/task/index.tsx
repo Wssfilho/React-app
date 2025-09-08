@@ -11,6 +11,11 @@ interface TaskProps {
     onDelete?: () => void
 
 }
+const formatDate = (date: Date | string | undefined) => {
+    if (!date) return ''
+    const dateObj = date instanceof Date ? date : new Date(date)
+    return dateObj.toLocaleDateString()
+}
 export default function Task({ title, description, priority, deadline, onDelete }: TaskProps) {
 
     const [isChecked, setIsChecked] = useState(priority === 'finished' ? true : false)
@@ -34,7 +39,7 @@ export default function Task({ title, description, priority, deadline, onDelete 
                 </header>
                 <div className={styles.taskInfo}>
                     {priority && !isChecked ? (<Priority type={priority} />) : (isChecked && <Priority type="finished" />)}
-                    <p>{deadline?.toLocaleDateString()}</p>
+                    <p>{formatDate(deadline)}</p>
                 </div>
                 {description && <p className={styles.description}>{description}</p>}
 
