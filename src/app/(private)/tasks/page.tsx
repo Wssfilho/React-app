@@ -26,7 +26,7 @@ export default function Tasks() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [tasks, setTasks] = useState([] as Task[]);
-    const[tasksInfo, setTasksInfo] = useState<Task[]>([]);
+    const [tasksInfo, setTasksInfo] = useState<Task[]>([]);
     const [newTask, setNewTask] = useState({
         titulo: '',
         desc: '',
@@ -74,12 +74,12 @@ export default function Tasks() {
             } catch (erro) {
                 console.error("Erro ao buscar categorias:", erro);
             } finally {
-               
+
             }
         }
         buscarTasks();
 
-    }, []);
+    });
 
 
 
@@ -202,18 +202,22 @@ export default function Tasks() {
                     </Button>
                 </header>
                 <main className={styles.main}>
-                    {tasksInfo.map((task) => {
-                        return (
-                            <Task
-                                key={task.id}
-                                title={task.titulo}
-                                priority={mapIntToPriority(Number(task.prioridade ?? 0))}
-                                {...(task.data_vencimento && { deadline: task.data_vencimento })}
-                                description={task.desc ?? undefined}
-                                onDelete={() => handleDeleteTask(task.id)}
-                            />
-                        );
-                    })}
+                    {tasksInfo && tasksInfo.length > 0 ? (
+                        tasksInfo.map((task) => {
+                            return (
+                                <Task
+                                    key={task.id}
+                                    title={task.titulo}
+                                    priority={mapIntToPriority(Number(task.prioridade ?? 0))}
+                                    {...(task.data_vencimento && { deadline: task.data_vencimento })}
+                                    description={task.desc ?? undefined}
+                                    onDelete={() => handleDeleteTask(task.id)}
+                                />
+                            );
+                        })
+                    ) : (
+                        <p>Não há tarefas para exibir</p>
+                    )}
                 </main>
             </div>
         </PrivateRoute>
