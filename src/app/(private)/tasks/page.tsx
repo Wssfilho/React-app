@@ -120,7 +120,7 @@ export default function Tasks() {
     }
     function handleDeleteTask(id: number) {
         axios.delete(`${api}tarefa/`, {
-            data: { id },
+            params: { id },
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -217,7 +217,7 @@ export default function Tasks() {
                         tasksInfo.map((task) => {
                             return (
                                 <Task
-                                    id={0} key={task.id}
+                                    id={task.id} key={task.id}
                                     title={task.titulo}
                                     priority={mapIntToPriority(Number(task.prioridade ?? 0))}
                                     {...(task.data_vencimento && { deadline: task.data_vencimento })}

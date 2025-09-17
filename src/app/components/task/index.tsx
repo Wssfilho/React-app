@@ -17,7 +17,7 @@ const formatDate = (date: Date | string | undefined) => {
     return dateObj.toLocaleDateString()
 }
 
-export default function Task({ title, description, priority, deadline, onDelete }: TaskProps) {
+export default function Task({ id, title, description, priority, deadline, onDelete }: TaskProps) {
 
     const [isChecked, setIsChecked] = useState(priority === 'finished' ? true : false)
     {
