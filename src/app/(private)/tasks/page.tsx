@@ -25,7 +25,6 @@ type PriorityType = 'low' | 'medium' | 'high' | 'finished' | null;
 export default function Tasks() {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [tasks, setTasks] = useState([] as Task[]);
     const [tasksInfo, setTasksInfo] = useState<Task[]>([]);
     const [newTask, setNewTask] = useState({
         titulo: '',
@@ -120,7 +119,19 @@ export default function Tasks() {
         }
     }
     function handleDeleteTask(id: number) {
-        setTasks(tasks.filter((task) => task.id !== id));
+        axios.delete(`${api}tarefa/`, {
+            data: { id },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        }).then(response => {
+            console.log('Task deleted successfully', response.data)
+            // Atualiza a lista de tarefas após a exclusão
+            setTasksInfo(tasksInfo.filter(task => task.id !== id));
+        }).catch(error => {
+            console.error('Error deleting task', error)
+            alert('Erro ao deletar a tarefa.');
+        })
     }
 
     return (
@@ -206,13 +217,12 @@ export default function Tasks() {
                         tasksInfo.map((task) => {
                             return (
                                 <Task
-                                    key={task.id}
+                                    id={0} key={task.id}
                                     title={task.titulo}
                                     priority={mapIntToPriority(Number(task.prioridade ?? 0))}
                                     {...(task.data_vencimento && { deadline: task.data_vencimento })}
                                     description={task.desc ?? undefined}
-                                    onDelete={() => handleDeleteTask(task.id)}
-                                />
+                                    onDelete={() => handleDeleteTask(task.id)}                                />
                             );
                         })
                     ) : (

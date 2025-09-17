@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import Priority from '../priority'
 import styles from './page.module.css'
 import { FiTrash } from 'react-icons/fi'
-
 interface TaskProps {
+    id: number
     title: string
     description?: string
     priority?: 'low' | 'medium' | 'high' | 'finished'
@@ -16,6 +16,7 @@ const formatDate = (date: Date | string | undefined) => {
     const dateObj = date instanceof Date ? date : new Date(date)
     return dateObj.toLocaleDateString()
 }
+
 export default function Task({ title, description, priority, deadline, onDelete }: TaskProps) {
 
     const [isChecked, setIsChecked] = useState(priority === 'finished' ? true : false)
@@ -32,7 +33,9 @@ export default function Task({ title, description, priority, deadline, onDelete 
                         }}
                         />
                         <button
-                        onClick={onDelete}
+                        onClick={() => {
+                                if (onDelete) onDelete();
+                        }}
                         >
                             <FiTrash /> </button>
                     </div>
